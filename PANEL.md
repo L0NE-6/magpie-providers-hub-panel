@@ -25,10 +25,15 @@ PR #21 protects the local Baizhi and MonkeyCode login paste endpoints with a
 per-window capability token and a same-origin check. The focused regression
 suite is green; upstream review is still required.
 
+The pinned [maintenance roadmap](https://github.com/L0NE-6/magpie-providers-hub-panel/issues/1)
+records the current verification baseline and remaining upstream audit work.
+
 ## Validation
 
 ```powershell
 npm test
 ```
+
+Current baseline: 433 pass, 0 fail, 3 skipped, 0 cancelled.
 
 The fork does not publish the upstream npm package from this repository.
