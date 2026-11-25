@@ -45,7 +45,7 @@ const ENTRY = {
 test('自注册：条目进缓存，官方条目不动', async () => {
   _reset()
   const home = fakeHome([{ package: 'officeace-auth', name: 'OfficeAce', community: true }])
-  const r = await registerSelf(ENTRY, { configDir: home.configDir })
+  const r = await registerSelf(ENTRY, { configDir: home.configDir, keepAlive: true })
   assert.equal(r.ok, true)
   assert.deepEqual(r.added, ['magpie-providers-hub'])
   const j = JSON.parse(readFileSync(home.marketPath, 'utf8'))
@@ -58,7 +58,7 @@ test('自注册：条目进缓存，官方条目不动', async () => {
 test('自注册：magpie 官方拉取整体重写后，后续时点把条目补回来（黄标的根因）', async () => {
   _reset()
   const home = fakeHome([{ package: 'officeace-auth', name: 'OfficeAce', community: true }])
-  await registerSelf(ENTRY, { configDir: home.configDir })
+  await registerSelf(ENTRY, { configDir: home.configDir, keepAlive: true })
   // 模拟 magpie 异步拉到官方 registry：整文件覆盖成官方条目
   writeFileSync(home.marketPath, JSON.stringify({ version: 1, plugins: [{ package: 'officeace-auth', name: 'OfficeAce', community: true }] }, null, 2), 'utf8')
   let j = JSON.parse(readFileSync(home.marketPath, 'utf8'))
@@ -74,7 +74,7 @@ test('自注册：magpie 官方拉取整体重写后，后续时点把条目补�
 test('自注册：重复合并且条目已存在 → 不写盘（幂等，不做无意义 IO）', async () => {
   _reset()
   const home = fakeHome([{ package: 'officeace-auth', name: 'OfficeAce', community: true }])
-  await registerSelf(ENTRY, { configDir: home.configDir })
+  await registerSelf(ENTRY, { configDir: home.configDir, keepAlive: true })
   const q = globalThis[_internal.QUEUE_KEY]
   const writesBefore = q.writes
   const r = _flushNow()
@@ -85,7 +85,7 @@ test('自注册：重复合并且条目已存在 → 不写盘（幂等，不做
 test('自注册：缓存不可用时跳过（不阻塞插件加载），缓存恢复后仍能写', async () => {
   _reset()
   const home = fakeHome(null) // 没有 plugin-market.json
-  const r = await registerSelf(ENTRY, { configDir: home.configDir })
+  const r = await registerSelf(ENTRY, { configDir: home.configDir, keepAlive: true })
   assert.equal(r.ok, false)
   assert.equal(r.reason, '市场缓存不可用')
   assert.equal(existsSync(home.marketPath), false, '不凭空造缓存文件')

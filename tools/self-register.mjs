@@ -125,7 +125,7 @@ function queue(configDir) {
  * 同一个包名重复入队只保留最后一次 —— 这就是去重。
  *
  * @param {object} entry { package, name, providers?, community?, summary }
- * @param {{configDir?: string, log?: Function, timeoutMs?: number}} [opts]
+ * @param {{configDir?: string, log?: Function, timeoutMs?: number, keepAlive?: boolean}} [opts]
  */
 export function registerSelf(entry, opts = {}) {
   if (!entry || typeof entry.package !== "string" || entry.package.length === 0) {
@@ -152,10 +152,10 @@ export function registerSelf(entry, opts = {}) {
         return
       }
       q.timer = setTimeout(step, FLUSH_SCHEDULE_MS[q.attempt])
-      if (typeof q.timer.unref === "function") q.timer.unref()
+      if (!opts.keepAlive && typeof q.timer.unref === "function") q.timer.unref()
     }
     q.timer = setTimeout(step, FLUSH_SCHEDULE_MS[0])
-    if (typeof q.timer.unref === "function") q.timer.unref()
+    if (!opts.keepAlive && typeof q.timer.unref === "function") q.timer.unref()
   })
 }
 
