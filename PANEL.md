@@ -25,6 +25,11 @@ PR #21 protects the local Baizhi and MonkeyCode login paste endpoints with a
 per-window capability token and a same-origin check. The focused regression
 suite is green; upstream review is still required.
 
+Upstream commit `270a8cc` completes the loopback-origin work for the AStudio,
+Loomy and Magicrew local sign-in pages. Cross-site requests that can mutate
+login state now fail before routing, while same-origin sign-in requests and
+ordinary page navigation continue to work.
+
 PR #22 keeps Accio's token-only login responses from collapsing multiple
 accounts into one `accountId`. The panel also covers AutoClaw's camelCase
 token response so its desktop logins cannot collapse into a shared identity.
@@ -41,6 +46,6 @@ inventory.
 npm test
 ```
 
-Current baseline: 441 pass, 0 fail, 3 skipped, 0 cancelled.
+Current baseline: 450 pass, 0 fail, 3 skipped, 0 cancelled.
 
 The fork does not publish the upstream npm package from this repository.
