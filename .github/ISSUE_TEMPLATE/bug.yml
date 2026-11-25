@@ -1,0 +1,66 @@
+name: Maintenance fork bug
+description: Report a reproducible provider login, quota, check-in or model bug.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: input
+    id: upstream
+    attributes:
+      label: Upstream issue or PR
+      placeholder: https://github.com/Gyl1219/magpie-providers-hub/issues/1
+  - type: input
+    id: package
+    attributes:
+      label: Package and version
+      placeholder: magpie-providers-hub 0.13.6
+    validations:
+      required: true
+  - type: input
+    id: magpie
+    attributes:
+      label: Magpie version
+    validations:
+      required: true
+  - type: dropdown
+    id: channel
+    attributes:
+      label: Channel
+      options:
+        - AStudio
+        - Accio
+        - LobsterAI
+        - MagiCrew
+        - AutoClaw
+        - Loomy
+        - MonkeyCode
+        - Qiniu
+        - Marvis
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+      description: Redact cookies, tokens, account identifiers and private prompts.
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy
+      options:
+        - label: I removed all credentials and private account data.
+          required: true

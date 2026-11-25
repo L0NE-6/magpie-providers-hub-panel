@@ -1,5 +1,10 @@
 # AGENTS.md — magpie-providers-hub 开发约定
 
+> **Maintenance fork note:** `main` mirrors
+> `Gyl1219/magpie-providers-hub`; `panel` is the maintained branch. Keep one
+> issue or PR per `fix/*` branch, run `npm test` before committing, never add
+> real credentials or account data, and never publish to npm from this fork.
+
 > 给所有改这个仓库的 AI / 人看。违反下面的约定，`npm test` 会红（第 1、2 条有门禁）。
 
 ## 1. 额度窗口必须走「滚动指针」（到期包型渠道）

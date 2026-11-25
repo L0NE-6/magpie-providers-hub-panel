@@ -35,6 +35,7 @@ permissions:
 
 jobs:
   publish:
+    if: github.repository == 'Gyl1219/magpie-providers-hub'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

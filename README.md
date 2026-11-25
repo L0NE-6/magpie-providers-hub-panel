@@ -1,5 +1,14 @@
 # magpie-providers-hub
 
+> [!IMPORTANT]
+> **Public maintenance fork**
+>
+> This repository is an unofficial maintenance fork of
+> [`Gyl1219/magpie-providers-hub`](https://github.com/Gyl1219/magpie-providers-hub).
+> The original project is [`iJetLi/dsh-providers-hub`](https://github.com/iJetLi/dsh-providers-hub).
+> Upstream remains the source of truth. This fork adds a tested `panel` branch,
+> upstream sync and focused issue/PR maintenance. See [`PANEL.md`](PANEL.md).
+
 > **只在 [magpie 社区](https://github.com/magpie-community/plugins) 上架。** 其它 registry
 > （含 Our Free Model）里的同名 `magpie-providers-hub` 条目不是本仓库发布 —— 卡片绿标应显示
 > 「magpie 社区」，显示别的徽标请核对作者与仓库地址（`Gyl1219/magpie-providers-hub`）。

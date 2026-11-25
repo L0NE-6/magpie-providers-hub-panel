@@ -1,0 +1,58 @@
+name: upstream-sync
+
+on:
+  schedule:
+    - cron: "23 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: panel-write
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: github.repository == 'L0NE-6/magpie-providers-hub-panel'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: panel
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Configure git
+        env:
+          PANEL_SYNC_TOKEN: ${{ secrets.PANEL_SYNC_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ -n "$PANEL_SYNC_TOKEN" ]; then
+            git remote set-url origin "https://x-access-token:${PANEL_SYNC_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          fi
+          git remote add upstream https://github.com/Gyl1219/magpie-providers-hub.git
+
+      - name: Fetch upstream
+        run: git fetch --no-tags upstream main:refs/remotes/upstream/main
+
+      - name: Mirror main
+        run: |
+          git switch --force-create main --track origin/main
+          git merge --ff-only upstream/main
+
+      - name: Merge into panel
+        run: |
+          git switch --force-create panel --track origin/panel
+          git merge --no-edit main
+
+      - name: Test
+        run: npm test
+
+      - name: Push both branches atomically
+        run: git push --atomic origin main:main panel:panel
