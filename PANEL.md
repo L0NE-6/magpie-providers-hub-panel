@@ -27,6 +27,8 @@ suite is green; upstream review is still required.
 
 The pinned [maintenance roadmap](https://github.com/L0NE-6/magpie-providers-hub-panel/issues/1)
 records the current verification baseline and remaining upstream audit work.
+See [`UPSTREAM-AUDIT.md`](UPSTREAM-AUDIT.md) for the issue and pull-request
+inventory.
 
 ## Validation
 
