@@ -219,6 +219,28 @@ Authorization**（带着会被拒，匿名头只有 Accept/Content-Type/User-Age
 `profile-summary`，把 `data.id` / `data.nickname` 写进凭据当身份；读不到就退回渠道名，
 登录照常成功。
 
+### Headless Linux / 远程浏览器回调
+
+Accio 与 LobsterAI 默认仍在 `127.0.0.1` 启动一次性回调服务，桌面端不需要额外配置。
+服务器没有本机浏览器时，可由用户自己的电脑打开授权页，再让回调命中服务器的公开
+origin：
+
+```json
+{
+  "oauthCallbackBaseUrl": "https://magpie.example.com",
+  "oauthCallbackBindHost": "0.0.0.0",
+  "oauthCallbackPort": 34567
+}
+```
+
+`oauthCallbackBaseUrl` 只写 http/https origin（可带反向代理子路径），不要带账号、
+query 或 hash；插件会把 `/auth/callback` 接在其后。反向代理需把该路径转到
+`oauthCallbackBindHost:oauthCallbackPort`。回调仍校验一次性 `state`，但公网暴露时
+应由 HTTPS 反向代理限制来源和访问日志。
+
+Windows 本机可用 mock store 和 URL 契约做离线验证，真实 Linux + 公网浏览器链路仍需
+在目标服务器上实测。
+
 ### magicrew / magicrew-intl（超级麦吉）
 
 超级麦吉：**国内 `letsmagic.cn` 与国际 `magicrew.ai` 是两个渠道**（账号体系隔离，

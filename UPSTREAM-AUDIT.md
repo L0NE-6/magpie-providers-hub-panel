@@ -16,7 +16,7 @@ Snapshot: 2026-11-25. Upstream remains
 | Item | State | Next evidence |
 | :--- | :--- | :--- |
 | [#1](https://github.com/Gyl1219/magpie-providers-hub/issues/1) | Architecture discussion | Keep the aggregate wrapper. Document failover and per-provider settings tradeoffs rather than splitting packages without a distribution plan. |
-| [#3](https://github.com/Gyl1219/magpie-providers-hub/issues/3) | Headless Linux callback design | Needs a configurable callback host/port or one-time callback-code relay. The owner has no Linux host, so this remains design work, not a verified fix. |
+| [#3](https://github.com/Gyl1219/magpie-providers-hub/issues/3) | Panel carries an opt-in callback override | Accio and LobsterAI can now use a public callback origin, bind host and fixed port while preserving state validation. Defaults remain `127.0.0.1`. Offline URL/config tests pass; a real Linux host plus remote-browser callback is still unverified. |
 | [#5](https://github.com/Gyl1219/magpie-providers-hub/issues/5) | Fixed upstream in 0.13.2 | Accio China and international entries now pass the region through sign-in, exchange, renewal and catalog calls. Waiting for reporter confirmation. |
 | [#6](https://github.com/Gyl1219/magpie-providers-hub/issues/6) | Fixed upstream in 0.13.1 | Browser sign-in now uses the user's default browser instead of the automation CDP browser. Waiting for reporter confirmation. |
 | [#7](https://github.com/Gyl1219/magpie-providers-hub/issues/7) | Fixed upstream in 0.13.1 | MonkeyCode China and international preserve tier prefixes with `modelHasSlash`. Waiting for a remaining model ID and log if 404 persists. |
