@@ -1182,8 +1182,9 @@ export const makeHubPlugin = (channel) => async (input, options = {}) => {
               //    magpie 按 accountId 认账号，第二个账号的登录会覆盖第一个。
               //    改用本次登录拿到的 refresh/access token 的指纹：每次登录各成一个
               //    账号；续期时 accountId 随旧槽合并保留（gatedRenew），不会漂。
-              const secret = [credential?.refresh_token, credential?.refresh, credential?.access_token,
-                credential?.access, credential?.token, credential?.cookie, credential?.key]
+              const secret = [credential?.refreshToken, credential?.refresh_token, credential?.refresh,
+                credential?.accessToken, credential?.access_token, credential?.access,
+                credential?.token, credential?.cookie, credential?.key]
                 .find((v) => typeof v === 'string' && v !== '')
               if (secret === undefined) return channel.displayName
               return `${channel.displayName} #${createHash('sha256').update(secret).digest('hex').slice(0, 6)}`
