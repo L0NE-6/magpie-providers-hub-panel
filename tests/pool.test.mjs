@@ -487,3 +487,32 @@ test('无昵称无组织码：已有旧槽（accountId=渠道名）时，另一�
     }
   })
 })
+
+test('无昵称无组织码：AutoClaw 驼峰 token 也能区分两个账号', async () => {
+  await isolated(async ({ mod }) => {
+    const channel = mod.REGISTERED_CHANNELS.find((c) => c.id === 'autoclaw')
+    const original = channel.beginLogin
+    const ids = []
+    channel.beginLogin = async () => ({
+      url: 'https://auth.example/authorize',
+      result: Promise.resolve({
+        accessToken: 'AT-AUTOCLAW',
+        refreshToken: `RT-${ids.length}`,
+        expires_at: Date.now() + 3600_000,
+      }),
+    })
+    try {
+      for (let i = 0; i < 2; i += 1) {
+        const t = toastClient()
+        const plugin = await mod.makeHubPlugin(channel)({ client: t.client }, { notify: false })
+        await plugin.config({})
+        const auth = await (await plugin.auth.methods[0].authorize()).callback()
+        ids.push(auth.accountId)
+      }
+    } finally {
+      channel.beginLogin = original
+    }
+    assert.notEqual(ids[0], ids[1], `两个 AutoClaw 账号撞了同一个 accountId：${ids.join(' / ')}`)
+    for (const id of ids) assert.match(id, /^AutoClaw（国际版） #[0-9a-f]{6}$/)
+  })
+})
