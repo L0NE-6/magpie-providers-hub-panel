@@ -26,8 +26,9 @@ per-window capability token and a same-origin check. The focused regression
 suite is green; upstream review is still required.
 
 PR #22 keeps Accio's token-only login responses from collapsing multiple
-accounts into one `accountId`. The panel carries the tested fix while the
-upstream pull request remains the review location.
+accounts into one `accountId`. The panel also covers AutoClaw's camelCase
+token response so its desktop logins cannot collapse into a shared identity.
+The upstream pull request remains the review location.
 
 The pinned [maintenance roadmap](https://github.com/L0NE-6/magpie-providers-hub-panel/issues/1)
 records the current verification baseline and remaining upstream audit work.
@@ -40,6 +41,6 @@ inventory.
 npm test
 ```
 
-Current baseline: 433 pass, 0 fail, 3 skipped, 0 cancelled.
+Current baseline: 436 pass, 0 fail, 3 skipped, 0 cancelled.
 
 The fork does not publish the upstream npm package from this repository.
