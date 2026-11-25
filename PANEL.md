@@ -25,6 +25,10 @@ PR #21 protects the local Baizhi and MonkeyCode login paste endpoints with a
 per-window capability token and a same-origin check. The focused regression
 suite is green; upstream review is still required.
 
+PR #22 keeps Accio's token-only login responses from collapsing multiple
+accounts into one `accountId`. The panel carries the tested fix while the
+upstream pull request remains the review location.
+
 The pinned [maintenance roadmap](https://github.com/L0NE-6/magpie-providers-hub-panel/issues/1)
 records the current verification baseline and remaining upstream audit work.
 See [`UPSTREAM-AUDIT.md`](UPSTREAM-AUDIT.md) for the issue and pull-request

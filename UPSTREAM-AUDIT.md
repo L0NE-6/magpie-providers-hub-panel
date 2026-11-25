@@ -7,6 +7,7 @@ Snapshot: 2026-11-25. Upstream remains
 
 | Item | State | Maintenance decision |
 | :--- | :--- | :--- |
+| [#22](https://github.com/Gyl1219/magpie-providers-hub/pull/22) | Clean and mergeable upstream candidate | The panel branch carries the Accio account-id fingerprint fix. Focused `tests/pool.test.mjs` is 18/18; full `npm test` is 435 pass, 0 fail, 3 skipped. A real two-account Accio login was not available. |
 | [#21](https://github.com/Gyl1219/magpie-providers-hub/pull/21) | Clean and mergeable upstream | Keep the per-window token and same-origin `/paste` protection. Focused tests pass 55/55; the full panel suite passes 433/0/3/0. |
 | [#2](https://github.com/Gyl1219/magpie-providers-hub/pull/2) | Conflicting and too broad | Do not merge as one change. The catalog-key half already landed upstream; the account-import half must be rebased as a separate PR. |
 
