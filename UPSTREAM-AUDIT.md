@@ -2,6 +2,7 @@
 
 Snapshot: 2026-11-25. Upstream remains
 [`Gyl1219/magpie-providers-hub`](https://github.com/Gyl1219/magpie-providers-hub).
+Its `main` is at `54a56656`; the maintenance `panel` includes that history.
 
 ## Open Pull Requests
 
