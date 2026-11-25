@@ -30,7 +30,7 @@
 
 import { createServer } from 'node:http'
 import { randomUUID } from 'node:crypto'
-import { untilText } from './shared.mjs'
+import { untilText, oauthCallbackConfig, oauthCallbackUrl } from './shared.mjs'
 
 export const CHANNEL_ID = 'lobsterai'
 export const DISPLAY_NAME = 'LobsterAI（有道龙虾）'
@@ -146,7 +146,8 @@ async function clientVersion() {
 // ── 登录：本地回调 + authCode 换 token ──────────────────────────────────
 
 /** 起本地回调服务，立刻返回 loginUrl + result（result 稍后 settle）。 */
-async function beginLogin(openBrowser) {
+async function beginLogin(openBrowser, opts = {}) {
+  const callback = oauthCallbackConfig(opts.options)
   let settleOk, settleFail
   const result = new Promise((resolve, reject) => { settleOk = resolve; settleFail = reject })
   result.catch(() => {})
@@ -158,16 +159,20 @@ async function beginLogin(openBrowser) {
   let server
   let closed = false
   let timer
+  let settled = false
   const closeServer = () => new Promise((resolve) => {
     if (closed || !server) return resolve()
     closed = true
     server.close(() => resolve())
   })
   const settle = (ok, value) => {
+    if (settled) return
+    settled = true
     if (timer !== undefined) clearTimeout(timer)
     void closeServer()
     ok ? settleOk(value) : settleFail(value)
   }
+  const cancel = (reason = 'LobsterAI: 登录已取消') => settle(false, new Error(reason))
   timer = setTimeout(() => settle(false, new Error('LobsterAI 登录超时（超过 10 分钟无回调）')), LOGIN_TIMEOUT_MS)
 
   server = createServer(async (req, res) => {
@@ -203,14 +208,14 @@ async function beginLogin(openBrowser) {
   })
 
   const port = await new Promise((resolve, reject) => {
-    let settled = false
+    let listenSettled = false
     server.once('error', (error) => {
-      if (settled) return
-      settled = true
+      if (listenSettled) return
+      listenSettled = true
       reject(error)
     })
-    server.listen(0, '127.0.0.1', () => {
-      settled = true
+    server.listen(callback.port, callback.bindHost, () => {
+      listenSettled = true
       server.on('error', () => {})
       const addr = server.address()
       resolve(typeof addr === 'object' && addr !== null ? addr.port : 0)
@@ -220,11 +225,16 @@ async function beginLogin(openBrowser) {
     throw error
   })
 
-  const redirectUri = `http://127.0.0.1:${port}${CALLBACK_PATH}`
+  const redirectUri = oauthCallbackUrl(callback, port, CALLBACK_PATH)
   const query = new URLSearchParams({ source: 'electron', redirect_uri: redirectUri, state })
   const url = `${PORTAL_BASE}/portal#/login?${query.toString()}`
   if (openBrowser) openBrowser(url)
-  return { url, result, instructions: `在打开的页面完成有道龙虾登录，完成后本窗口自动继续。也可以手动打开：${url}` }
+  return {
+    url,
+    result,
+    cancel,
+    instructions: `在打开的页面完成有道龙虾登录，完成后本窗口自动继续。也可以手动打开：${url}`,
+  }
 }
 
 /**

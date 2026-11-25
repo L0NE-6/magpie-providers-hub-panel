@@ -1142,7 +1142,7 @@ export const makeHubPlugin = (channel) => async (input, options = {}) => {
           async authorize() {
                   // ⚠ 把 loginMethods 条目的 `arg` 透传给渠道：多登录入口（如 marvis 的
                   //   QQ / 微信 / 本机导入）靠它区分点了哪个；不收参的渠道忽略即可。
-                  const started = await channel.beginLogin(openBrowser, { arg })
+                  const started = await channel.beginLogin(openBrowser, { arg, options })
                   // 登录前的本渠道账号槽：既判「重复登录是否已过期」，也用于认领旧槽
                   // （昵称缺失时代被写成渠道显示名的那种，见 resolveAccountId）。
                   const ownSlots = readOwnAuthEntries({ providerId: PROVIDER, withValue: true })

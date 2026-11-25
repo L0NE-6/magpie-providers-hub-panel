@@ -99,6 +99,27 @@ test('★ 登录入口有两个区域（中国版 / 国际版），arg 能真正
   }
 })
 
+test('远程回调配置：授权 URL 用公开 origin，桌面端默认值不变', async () => {
+  const started = await accioChannel.beginLogin(undefined, {
+    arg: 'cn',
+    options: {
+      oauthCallbackBaseUrl: 'https://magpie.example.com/gateway/',
+      oauthCallbackBindHost: '127.0.0.1',
+      oauthCallbackPort: 0,
+    },
+  })
+  try {
+    const url = new URL(started.url)
+    assert.equal(
+      url.searchParams.get('return_url'),
+      'https://magpie.example.com/gateway/auth/callback',
+    )
+  } finally {
+    started.cancel()
+    await started.result.catch(() => {})
+  }
+})
+
 test('令牌信封：expiresAt 秒→毫秒；缺一不可；sgcookie 透传', () => {
   // 经 refreshCredential 的解析路径验证 toCredential
   const stub = stubFetch([{

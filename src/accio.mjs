@@ -28,7 +28,7 @@
 
 import { createHash, randomBytes, randomUUID } from 'node:crypto'
 import { createServer } from 'node:http'
-import { fetchWithRetry } from './shared.mjs'
+import { fetchWithRetry, oauthCallbackConfig, oauthCallbackUrl } from './shared.mjs'
 
 export const CHANNEL_ID = 'accio'
 export const DISPLAY_NAME = 'Accio (阿里)'
@@ -230,13 +230,15 @@ export async function refreshCredential(current) {
  * 授权 URL 里必须带真实端口，而 `listen(0)` 的端口号只能从 `listening` 事件取。
  *
  * @param {((url: string) => void) | undefined} openBrowser 宿主给的浏览器打开器
- * @param {{ arg?: string }} [opts] hub 契约的第二个参数：`loginMethods` 条目的
+ * @param {{ arg?: string, options?: object }} [opts] hub 契约的第二个参数：
+ *   `loginMethods` 条目的
  *   `arg` 原样透传到这里（见 `src/aggregate.mjs` 的 `buildOne`）。本渠道用它
  *   区分中国版 / 国际版 —— 两个**登录页域名不同**，且区域会写进凭据供续期用。
  *   未传或未登记的值一律回落 `'cn'`（与凭据里的历史默认一致，保证旧入口不变）。
  */
 async function beginLogin(openBrowser, opts = {}) {
   const region = opts.arg === 'global' ? 'global' : 'cn'
+  const callback = oauthCallbackConfig(opts.options)
   const pkce = createPkce()
   const state = randomBytes(32).toString('hex')
   let settleOk, settleFail
@@ -318,8 +320,9 @@ async function beginLogin(openBrowser, opts = {}) {
       settledListen = true
       reject(error)
     })
-    // 只绑回环：绑全网卡会让同局域网机器也能投伪造的 ?code=。
-    server.listen(0, '127.0.0.1', () => {
+    // 默认只绑回环；只有用户显式配置 oauthCallbackBindHost 才扩大监听范围。
+    // 回调仍必须通过一次性 state 校验，伪造 ?code= 不会落进账号。
+    server.listen(callback.port, callback.bindHost, () => {
       settledListen = true
       server.on('error', () => {})
       const addr = server.address()
@@ -330,7 +333,7 @@ async function beginLogin(openBrowser, opts = {}) {
     throw error
   })
 
-  const redirectUri = `http://127.0.0.1:${port}${CALLBACK_PATH}`
+  const redirectUri = oauthCallbackUrl(callback, port, CALLBACK_PATH)
   const loginUrl = buildAuthUrl({ region, redirectUri, state, codeChallenge: pkce.challenge })
   if (openBrowser) openBrowser(loginUrl)
   return {

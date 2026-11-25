@@ -89,6 +89,26 @@ const runLogin = async (routes) => {
   }
 }
 
+test('远程回调配置：LobsterAI 授权页使用公开 origin，并可主动取消监听', async () => {
+  const started = await lobsteraiChannel.beginLogin(undefined, {
+    options: {
+      oauthCallbackBaseUrl: 'https://magpie.example.com/gateway/',
+      oauthCallbackBindHost: '127.0.0.1',
+      oauthCallbackPort: 0,
+    },
+  })
+  try {
+    const query = new URLSearchParams(started.url.split('?')[1] ?? '')
+    assert.equal(
+      query.get('redirect_uri'),
+      'https://magpie.example.com/gateway/auth/callback',
+    )
+  } finally {
+    started.cancel()
+    await started.result.catch(() => {})
+  }
+})
+
 test('登录：exchange 不带身份时用 profile-summary 的 id + 昵称补上（同渠道多账号才分得开槽）', async () => {
   const { credential, calls } = await runLogin([
     EXCHANGE_OK,
