@@ -487,7 +487,6 @@ test('无昵称无组织码：已有旧槽（accountId=渠道名）时，另一�
     }
   })
 })
-
 test('无昵称无组织码：AutoClaw 驼峰 token 也能区分两个账号', async () => {
   await isolated(async ({ mod }) => {
     const channel = mod.REGISTERED_CHANNELS.find((c) => c.id === 'autoclaw')
