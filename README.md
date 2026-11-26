@@ -219,6 +219,13 @@ Authorization**（带着会被拒，匿名头只有 Accept/Content-Type/User-Age
 `profile-summary`，把 `data.id` / `data.nickname` 写进凭据当身份；读不到就退回渠道名，
 登录照常成功。
 
+**账号导入**：登录方式末尾另有「手动导入（粘贴凭据）」与「文件导入（账号 JSON）」。
+两者都走 magpie 原生表单（`api + keyless + prompts`），不打开网页、不监听端口、不写
+旁路凭据文件。支持官方客户端导出的单对象、数组、`{accounts:[…]}` 与 JSONL；`expires_at`
+的秒会统一换算成毫秒。导入前会用 `profile-summary` 做一次只读校验：401/403 判 token
+无效并跳过，风控/断网只提示但仍导入；同一 token 重复导入会沿用旧槽的账号名并补齐
+`refresh_token`，不会多出一行。
+
 ### Headless Linux / 远程浏览器回调
 
 Accio 与 LobsterAI 默认仍在 `127.0.0.1` 启动一次性回调服务，桌面端不需要额外配置。
@@ -390,6 +397,7 @@ src/astudio.mjs            讯飞渠道
 src/accio.mjs              Accio（阿里）渠道（Gemini 风格信封 + 工具分片合并）
 src/autoclaw.mjs           AutoClaw 国内+国际渠道（MD5 签名 / 406 白名单 / 桌面端凭据导入 / 钱包批次分档）
 src/lobsterai.mjs          LobsterAI（有道）渠道（信封 + 裸 SSE 对话 / 门户 OAuth 回调）
+src/lobsterai-import.mjs   LobsterAI 账号 JSON / token 导入解析与校验
 src/magicrew.mjs           超级麦吉国内+国际渠道（三段式凭据 / 积分到期分档 / 签到与新手任务）
 src/magicrew-browser.mjs   超级麦吉 CDP 浏览器登录（复用本机 Edge/Chrome 登录态）
 src/shared.mjs             凭据存取、信封解析、到期分档
